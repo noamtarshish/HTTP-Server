@@ -1,10 +1,8 @@
 # Ex 4.4 - HTTP Server Shell
 
-# TO DO: import modules
 import socket
 import os
 
-# TO DO: set constants
 IP = '0.0.0.0'
 PORT = 80
 SOCKET_TIMEOUT = 0.1
@@ -94,16 +92,6 @@ def handle_client_request(resource, client_socket):
         client_socket.sendall(response.encode())
         client_socket.close()
 
-    """
-    # TO DO: check if URL had been redirected, not available or other error code. For example:
-    if url in REDIRECTION_DICTIONARY:
-        # TO DO: send 302 redirection response
-
-    # TO DO: read the data from the file
-    data = get_file_data(filename)
-    http_response = http_header + data
-    client_socket.send(http_response.encode())
-    """
     return
 
 def validate_http_request(request):
