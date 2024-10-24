@@ -5,6 +5,9 @@ import socket
 import os
 
 # set constants
+import socket
+import os
+
 IP = '0.0.0.0'
 PORT = 80
 SOCKET_TIMEOUT = 0.1
