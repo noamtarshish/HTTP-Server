@@ -1,10 +1,10 @@
-# Ex 4.4 - HTTP Server Shell
+# HTTP Server Shell
 
-# TO DO: import modules
+# import modules
 import socket
 import os
 
-# TO DO: set constants
+# set constants
 IP = '0.0.0.0'
 PORT = 80
 SOCKET_TIMEOUT = 0.1
@@ -31,6 +31,40 @@ def handle_client_request(resource, client_socket):
 
     if resource == '/':
         resource = 'index.html'  # Default to index.html if root is requested
+
+    if resource == '/calculate-next':
+        response = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n5"
+        client_socket.sendall(response.encode())
+        client_socket.close()
+        return
+
+    if '/calculate-next?num=' in resource:
+        try:
+            split_res = resource.split('?') # split the URL by '?' to get the number
+            num = int(split_res[1].split('=')[1]) # get the number from the URL by split again and take the second part
+            response = f"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n{num + 1}"
+        except (IndexError, ValueError):
+            response = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\nInvalid or missing 'num' parameter"
+
+        client_socket.sendall(response.encode())
+        client_socket.close()
+        return
+
+    if '/calculate-area?' in resource:
+        try:
+            split_res = resource.split("?")
+            params = split_res[1].split("&")
+            height = float(params[0].split("=")[1])
+            width = float(params[1].split("=")[1])
+            area = (height * width) / 2
+            response = f"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n{area}"
+        except:
+            response = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\nInvalid or missing Triangle parameters"
+
+        client_socket.sendall(response.encode())
+        client_socket.close()
+        return
+
 
     # Construct the full path to the requested file
     requested_file = resource.strip('/')
@@ -94,16 +128,6 @@ def handle_client_request(resource, client_socket):
         client_socket.sendall(response.encode())
         client_socket.close()
 
-    """
-    # TO DO: check if URL had been redirected, not available or other error code. For example:
-    if url in REDIRECTION_DICTIONARY:
-        # TO DO: send 302 redirection response
-
-    # TO DO: read the data from the file
-    data = get_file_data(filename)
-    http_response = http_header + data
-    client_socket.send(http_response.encode())
-    """
     return
 
 def validate_http_request(request):
